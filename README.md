@@ -3,22 +3,22 @@ A Python module for FL Studios MIDI-scripting API that make volume conversions b
 
 ### Purpose
 
-You can set the volume in the mixer in your scripts with FL Studio's MIDI-scripting API with **mixer.setTrackVolume**. This method accepts a float value between 0 and 1 as input. So how can you set the volume to -4.5 dB?  Well, you'd need to convert it from dB to float first. Something like `float_value = pow(10.0, -4.5/20)`, right?  
+You can set the volume in the mixer in your scripts with FL Studio's MIDI-scripting API with **mixer.setTrackVolume**. This method accepts a float value between 0 and 1 as input. So how can you set the volume to -4.5 dB for example? Well, you'd need to convert it from dB to float first. Something like `float_value = pow(10, -4.5 / 20)`, right?  
 
 **No**. The reason is that FL Studio uses a non-linear volume scale.
 
-In my attempt to solve this, I made a map of the dB values and wrote some code that fetches the nearest values from a lookup-table. It gets the job done with perfect accuracy (when converting from dB to float) unless you try to convert ridiculously low dB-values below -70dB, where the error-rate will increase really fast. The reason for this is that the volume scale in FL Studio loses a lot of its resolution near the bottom end, i.e. it's not possible to set any exact values when the values approach near silence (who would need that anyway?). Nevertheless, I have mapped all the nearest values that **mixer.setTrackVolume** can set, all the way to the bottom. In that regard, the conversions are as perfect as they can be made.
+In my attempt to solve this, I made a map of the dB values and wrote some code that fetches the nearest values from a lookup-table. It gets the job done with perfect accuracy (_when converting from dB to float_) unless you try to convert ridiculously low dB-values below -70dB, where the error-rate will increase really fast. The reason for this is that the volume scale in FL Studio loses a lot of its resolution near the bottom end, i.e. it's not possible to set any exact values when the values approach near silence (who would need that anyway?). Nevertheless, I have mapped all the nearest values that **mixer.setTrackVolume** can set, all the way to the bottom. In that regard, the conversions are as perfect as they can be made.
 
-Please note that when converting the other way around. i.e. from float to dB, the accuracy will also suffer a bit due to the fact that the conversion uses the nearest value it can find in the lookup-table. The result will be pretty close (within 0.1 dB) but not as perfect as when converting from dB to float. You can circumvent this by using **mixer.getTrackVolume** and give it the optional argument to return the result in dB instead.
+Please note that when converting the other way around (_from float to dB_), the accuracy will suffer a bit due to the fact that the conversion uses the nearest value it can find in the lookup-table. The result will be pretty close (_within 0.1 dB_) but not as perfect as when converting from dB to float. You can circumvent this by using **mixer.getTrackVolume** and give it the optional argument to return the result in dB instead.
 
 ### Installation & Usage
 
-Copy the file volume.py to the same folder where your own script resides. Open your script in a text-editor and import the flstudio-volume-converter module. The import-line can be added anywhere in your script as long as it's somewhere at the beginning. I recommend putting it together with the rest of FL Studio's MIDI scripting API imports.
+Copy the file volume.py to the same folder as your own script resides in. Open your script in a text-editor and import the flstudio-volume-converter module. The import-line can be added anywhere in your script as long as it's somewhere at the beginning. I recommend putting it together with the rest of FL Studio's MIDI scripting API imports.
 
-To import the volume-converter, add this line to your script:  
+To import flstudio-volume-converter, add this line to your script:  
 `import volume`
 
-The volume convert gives you access to 3 methods:
+It gives you access to 3 methods:
 
 |Method|Argument|Result|Documentation|
 |:---|:---|:---|:---|
@@ -27,6 +27,7 @@ The volume convert gives you access to 3 methods:
 |add_db|float, decibel|float|Takes a given float value and adds or subtracts the given amount of decibels from it. A positive decibel value will be added, a negative value will be subtracted. The result will be within a 0.1 dB margin of error.|
 
 ### Examples:
+(_requires that the mixer module from FL Studios MIDI scripting API has been imported._)
 
 ---
 ### db_to_fl
